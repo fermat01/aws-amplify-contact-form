@@ -133,7 +133,8 @@ function App() {
                 value={formData.message}
                 onChange={handleInputChange}
                 rows={10}
-                cols={50}
+                cols={ 50 }
+                required
               />
             </div>
             <button
