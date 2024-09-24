@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 type FormData = {
   name: string;
@@ -13,10 +13,8 @@ function App() {
     message: "",
   });
 
-  const formDataHandleFunc = (
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({
@@ -25,95 +23,105 @@ function App() {
     }));
   };
 
-  const formOnSubmitFunc = () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (formData.name === "" || formData.email === "") {
-      return alert("Please fill the form.");
+      alert("Please fill in all required fields.");
+      return;
     }
-
-    const requestHeaders = new Headers();
-    requestHeaders.append("Content-Type", "application/json");
-
-    const body = JSON.stringify(formData);
 
     const requestOptions = {
       method: "POST",
-      headers: requestHeaders,
-      body: body,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     };
 
-    // Replace fetch endpoint with your actual API gateway endpoint
-    fetch(
-      "https://2k5cz6ooi8.execute-api.us-east-1.amazonaws.com/Dev",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => alert(JSON.parse(result).message))
-      .catch((error) => alert(`error -  ${error}`));
+    try {
+      const response = await fetch(
+        "https://2k5cz6ooi8.execute-api.us-east-1.amazonaws.com/Dev",
+        requestOptions
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      console.log("Message is successfully sent and we will get back to you soon");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center min-h-96">
-        <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-lg">
-            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-              Contact Us
-            </h1>
-            <p className="mx-auto mt-4 max-w-md text-center text-gray-500">
-              If you have any questions, comments, or just want to say hello, I’d love to hear from you! Please fill out the contact form
-              below, and I will get back to you as soon as possible.
-            </p>
-            <div className="mt-10">
-              <label htmlFor="name" className="sr-only">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-lg bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-center text-2xl font-bold text-blue-600 sm:text-3xl mb-6">
+            Contact us.
+          </h1>
+          <p className="text-center text-gray-500 mb-8">
+            If you have any questions or comments, please fill out the form below.
+            We'll get back to you as soon as possible.
+          </p>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Name
               </label>
-              <div className="relative">
-                <input
-                  className="w-full rounded-lg p-4 pe-12 text-sm shadow-sm"
-                  placeholder="Name"
-                  name="name"
-                  onChange={formDataHandleFunc}
-                />
-              </div>
+              <input
+                id="name"
+                className="w-full rounded-lg p-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Your Name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
             </div>
-            <div className="mt-6">
-              <label htmlFor="email" className="sr-only">
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  className="w-full rounded-lg  p-4 pe-12 text-sm shadow-sm"
-                  placeholder="Enter email"
-                  name="email"
-                  onChange={formDataHandleFunc}
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                className="w-full rounded-lg p-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="your@email.com"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
             </div>
-            <div className="mt-6">
-              <label htmlFor="message" className="sr-only">
+            <div className="mb-6">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                 Message
               </label>
-              <div className="relative">
-                <textarea
-                  className="w-full rounded-lg p-4 pe-12 text-sm shadow-sm"
-                  placeholder="Message"
-                  name="message"
-                  onChange={formDataHandleFunc}
-                />
-              </div>
+              <textarea
+                id="message"
+                className="w-full rounded-lg p-3 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                placeholder="Your message here..."
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                rows={ 10 }
+                cols={50} 
+              />
             </div>
             <button
               type="submit"
-              className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white mt-6"
-              onClick={() => formOnSubmitFunc()}
+              className="w-full rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Send Message
             </button>
-          </div>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
