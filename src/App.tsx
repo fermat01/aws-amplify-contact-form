@@ -60,8 +60,8 @@ function App() {
               Contact Us
             </h1>
             <p className="mx-auto mt-4 max-w-md text-center text-gray-500">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Obcaecati sunt dolores deleniti inventore quaerat mollitia?
+              If you have any questions, comments, or just want to say hello, I’d love to hear from you! Please fill out the contact form
+              below, and I will get back to you as soon as possible.
             </p>
             <div className="mt-10">
               <label htmlFor="name" className="sr-only">
