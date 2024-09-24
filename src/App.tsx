@@ -31,7 +31,7 @@ function App() {
       alert("Please fill in all required fields.");
       return;
     }
-
+ // Replace fetch endpoint with your actual API gateway endpoint
     const requestOptions = {
       method: "POST",
       headers: {
@@ -42,7 +42,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "https://2k5cz6ooi8.execute-api.us-east-1.amazonaws.com/Dev",
+        "AWS_API_GATEWAY_ENDPOINT",
         requestOptions
       );
 
